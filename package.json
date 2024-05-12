@@ -1,0 +1,42 @@
+{
+	"name": "tweetbot",
+	"version": "0.0.1",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"prebuild": "rimraf dist",
+		"build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Kenny619/tweetbot.git"
+	},
+	"author": "",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/Kenny619/tweetbot/issues"
+	},
+	"homepage": "https://github.com/Kenny619/tweetbot#readme",
+	"devDependencies": {
+		"@biomejs/biome": "^1.7.2",
+		"@types/express": "^4.17.21",
+		"@types/express-session": "^1.18.0",
+		"@types/node": "^20.12.6",
+		"@types/nodemailer": "^6.4.15",
+		"@types/oauth": "^0.9.4",
+		"@types/sendmail": "^1.4.7",
+		"dotenv": "^16.4.5",
+		"rimraf": "^5.0.5",
+		"sendmail": "^1.6.1",
+		"tsc": "^2.0.4",
+		"tsc-alias": "^1.8.8",
+		"twitter-api-sdk": "^1.2.1",
+		"twitter-api-v2": "^1.16.1",
+		"typescript": "^5.4.4"
+	},
+	"dependencies": {
+		"nodemailer": "^6.9.13"
+	}
+}

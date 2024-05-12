@@ -1,0 +1,79 @@
+import fsp from "node:fs/promises";
+import path from "node:path";
+class Log {
+    static instance;
+    static filePath;
+    static appName;
+    constructor() { }
+    static async init(appName, logFilePath) {
+        try {
+            const stat = await fsp.stat(logFilePath);
+            if (!stat.isFile()) {
+                const logDir = await fsp.mkdir(path.dirname(logFilePath));
+                await fsp.writeFile(logFilePath, "", { encoding: "utf8" });
+            }
+        }
+        catch (e) {
+            throw new Error(`Invalid log file path ${logFilePath} ERROR: ${e}`);
+        }
+        if (Log.instance) {
+            return Log.instance;
+        }
+        Log.instance = new Log();
+        Log.filePath = logFilePath;
+        Log.appName = appName;
+        return Log.instance;
+    }
+    static async record(level, eventName, message) {
+        const obj = {};
+        obj.createdAt = new Date().toISOString();
+        obj.appName = Log.appName;
+        obj.eventname = eventName;
+        obj.level = level;
+        obj.messsage = message;
+        const log = `${Object.values(obj).join("\t")}\r\n`;
+        try {
+            await fsp.appendFile(Log.filePath, log);
+        }
+        catch (e) {
+            throw new Error(`Failed to record application log to ${Log.filePath}. ERROR:${e}`);
+        }
+    }
+    static async debug(eventName, message) {
+        try {
+            await Log.record("DEBUG", eventName, message);
+        }
+        catch (e) {
+            throw new Error(`Log debug failed. ${e}`);
+        }
+    }
+    static async info(eventName, message) {
+        try {
+            Log.record("INFO", eventName, message);
+        }
+        catch (e) {
+            throw new Error(`Log info failed ${e}`);
+        }
+    }
+    static async warn(eventName, message) {
+        try {
+            Log.record("WARN", eventName, message);
+        }
+        catch (e) {
+            throw new Error(`Log warn failed ${e}`);
+        }
+    }
+    static async error(eventName, message) {
+        try {
+            Log.record("ERROR", eventName, message);
+        }
+        catch (e) {
+            throw new Error(`Log error failed ${e}`);
+        }
+    }
+    static fatal(eventName, message) {
+        Log.record("FATAL", eventName, message);
+    }
+}
+await Log.init(process.env.LOG_APP_NAME, process.env.LOG_FILE_PATH);
+export default Log;
